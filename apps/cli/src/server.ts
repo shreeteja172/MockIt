@@ -1,5 +1,5 @@
-import { faker } from "@faker-js/faker";
 import { createServer } from "node:http";
+import { randomUUID } from "node:crypto";
 import type { ServerResponse } from "node:http";
 
 export type ServerOptions = {
@@ -19,22 +19,75 @@ const sendJson = (
   response.end(JSON.stringify(payload));
 };
 
+const pick = <T>(items: T[]): T =>
+  items[Math.floor(Math.random() * items.length)]!;
+
+const firstNames = [
+  "Ava",
+  "Liam",
+  "Maya",
+  "Noah",
+  "Zoe",
+  "Ethan",
+  "Ivy",
+  "Leo",
+];
+const lastNames = [
+  "Sharma",
+  "Smith",
+  "Khan",
+  "Patel",
+  "Garcia",
+  "Johnson",
+  "Ng",
+  "Brown",
+];
+const topics = [
+  "Auth",
+  "Dashboard",
+  "API",
+  "Search",
+  "Billing",
+  "Profile",
+  "Notifications",
+  "Deploy",
+];
+const verbs = [
+  "improve",
+  "fix",
+  "refactor",
+  "optimize",
+  "ship",
+  "review",
+  "test",
+  "document",
+];
+
 const createMockUser = () => {
+  const firstName = pick(firstNames);
+  const lastName = pick(lastNames);
+  const username = `${firstName.toLowerCase()}_${lastName.toLowerCase()}`;
+
   return {
-    id: faker.string.uuid(),
-    fullName: faker.person.fullName(),
-    username: faker.internet.username(),
-    email: faker.internet.email(),
-    avatarUrl: faker.image.avatar(),
+    id: randomUUID(),
+    fullName: `${firstName} ${lastName}`,
+    username,
+    email: `${username}@example.com`,
+    avatarUrl: `https://api.dicebear.com/9.x/identicon/svg?seed=${username}`,
   };
 };
 
 const createMockPost = () => {
+  const topic = pick(topics);
+  const verb = pick(verbs);
+
   return {
-    id: faker.string.uuid(),
-    title: faker.lorem.sentence(),
-    body: faker.lorem.paragraphs({ min: 1, max: 3 }),
-    createdAt: faker.date.recent({ days: 14 }).toISOString(),
+    id: randomUUID(),
+    title: `${topic}: ${verb} workflow`,
+    body: `This is a generated ${topic.toLowerCase()} note used for mock API responses.`,
+    createdAt: new Date(
+      Date.now() - Math.floor(Math.random() * 14 * 24 * 60 * 60 * 1000),
+    ).toISOString(),
   };
 };
 
