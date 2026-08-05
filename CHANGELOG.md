@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Allow setting `?count=0` in requests to simulate returning empty state arrays `[]`.
+
+### Fixed
+- Fixed bug where dynamic route parameters declared with curly braces (e.g. `{id}`) would fail to match in requests. Now, both `:id` and `{id}` syntaxes are fully supported.
+
 ## [1.0.0] - 2026-08-05
 
 First stable release of FexAPI — a zero-config mock API CLI. Describe your endpoints in a schema file, run one command, and get a local server that returns realistic, deterministic data powered by Faker.js.

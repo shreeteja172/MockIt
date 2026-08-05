@@ -266,8 +266,8 @@ const toCollectionKey = (routePath: string): string => {
     return "data";
   }
 
-  // Remove any dynamic parameters from the key (e.g. ":id")
-  if (lastSegment.startsWith(":")) {
+  // Remove any dynamic parameters from the key (e.g. ":id" or "{id}")
+  if (lastSegment.startsWith(":") || (lastSegment.startsWith("{") && lastSegment.endsWith("}"))) {
     const parentSegment = segments[segments.length - 2];
     return parentSegment
       ? parentSegment.replace(/[^a-zA-Z0-9_]/g, "_")
@@ -304,8 +304,8 @@ const matchRoute = (
       const routePart = routeParts[i]!;
       const requestPart = requestParts[i]!;
 
-      if (routePart.startsWith(":")) {
-        const paramName = routePart.slice(1);
+      if (routePart.startsWith(":") || (routePart.startsWith("{") && routePart.endsWith("}"))) {
+        const paramName = routePart.startsWith(":") ? routePart.slice(1) : routePart.slice(1, -1);
         params[paramName] = requestPart;
       } else if (routePart !== requestPart) {
         isMatch = false;
@@ -359,7 +359,7 @@ const getCountOverrideFromUrl = (
     return undefined;
   }
 
-  return Math.min(Math.max(Math.floor(parsedCount), 1), 1000);
+  return Math.min(Math.max(Math.floor(parsedCount), 0), 1000);
 };
 
 const getPaginationFromUrl = (
